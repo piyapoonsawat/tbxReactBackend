@@ -41,20 +41,19 @@ git push -u origin master
 
 //Update
 git add .
-git commit -m “Rev 1”
+git commit -m “Rev1”
 git push origin master
 
+// from tutorial 
+git init
+git remote add origin git@github.com:username/reponame.git
+git add .
+git commit -m “initial commit”
+git push origin master
 
 amplify init (use AWS profile and select "default" profile)
 
 check amplify dashboard to see the project
-
-"amplify status" will show you what you've added already and if it's locally configured or deployed
-"amplify add <category>" will allow you to add features like user login or a backend API
-"amplify push" will build all your local backend resources and provision it in the cloud
-"amplify console" to open the Amplify Console and view your project status
-"amplify publish" will build all your local backend and frontend resources (if you have hosting category added) and provision it in the cloud
-Try "amplify add api" to create a backend API and then "amplify publish" to deploy everything
 
 amplify add auth (select without social, using email and phone)
 
@@ -75,5 +74,24 @@ Google setup: by getting Domain in Cognito,
 AsIwOX52jKH3t3qYukavSDzF
 profile email openid
 
+ Do you want to use the default authentication and security configuration? Default configuration with Social Provider (Federation)
+ How do you want users to be able to sign in? Email
+ Do you want to configure advanced settings? Yes, I want to make some additional changes.
+ What attributes are required for signing up? Birthdate (This attribute is not supported by Login With Amazon.), Email, Gender (This attribute
+ is not supported by Login With Amazon.), Name
+ Do you want to enable any of the following capabilities? 
+ What domain name prefix do you want to use? tbxbackend5c4c1752-5c4c1752
+ Enter your redirect signin URI: https://www.makeyourq.com/
+? Do you want to add another redirect signin URI No
+ Enter your redirect signout URI: https://www.makeyourq.com/
+? Do you want to add another redirect signout URI No
+ Select the social providers you want to configure for your user pool: Facebook, Google
+ Enter your Facebook App ID for your OAuth flow:  782963109145090
+ Enter your Facebook App Secret for your OAuth flow:  864e588cceadab268e9b5f95a4bad94d
+ Enter your Google Web Client ID for your OAuth flow:  83368141490-ei2icl3iaeq4vhvtdn6rcjuq6doq9him.apps.googleusercontent.com
+ Enter your Google Web Client Secret for your OAuth flow:  AsIwOX52jKH3t3qYukavSDzF
+
+
 amplify add api 
+amplify add storage
 

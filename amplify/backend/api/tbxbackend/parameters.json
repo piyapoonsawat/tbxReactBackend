@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "tbxbackend",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authtbxbackend5c4c1752",
+            "Outputs.UserPoolId"
+        ]
+    }
+}

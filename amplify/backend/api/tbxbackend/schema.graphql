@@ -1,0 +1,163 @@
+enum CompanyType {Agriculture, Retail, Fashion}
+enum AuthType {email, Facebook, Google}
+enum MessageType {reqStaff, reqTransfer}
+enum StatusType {pending, approved, rejected, cancelled, info}
+enum PaymentType {topup, createCompany, createProduct, createLot}
+
+type tbxUser @model
+@auth(rules: [
+{ allow: owner },
+{ allow: private, operations: [read] },
+{ allow: public, operations: [read] }
+]){
+id: ID!
+name: String
+authType: AuthType
+
+
+
+companyAsOwner: [tbxCompany] @connection(keyName: "byOwner", fields:["id"], limit:20)
+companyAsStaff: [tbxStaffCompany] @connection (keyName: "byStaffId", fields:["id"], limit:20)
+outgoingMessage : [tbxMessage] @connection (keyName: "byFromUserByDate", fields: ["id"], limit:20)
+incomingMessage : [tbxMessage] @connection (keyName : "byToUserByDate", fields: ["id"], limit:20)
+payments: [tbxPayment] @connection (keyName: "byUserByDate", fields:["id"], limit:20)
+}
+
+type tbxStaffCompany @model 
+@key (name: "byStaffId", fields:["staffId"])
+@key(name:"byCompany", fields:["companyId"])
+{
+id: ID!
+staffId : ID!
+companyId : ID!
+staff : tbxUser @connection(fields:["staffId"])
+company: tbxCompany @connection (fields:["companyId"])
+
+
+}
+
+type tbxCompany @model
+@auth(rules: [
+{ allow: owner, ownerField: "ownerId" },
+{ allow: private, provider: iam, operations: [read] }
+{ allow: public, operations: [read] }
+])
+@key (name: "byOwner", fields:["ownerId"])
+{
+id:ID!
+name: String
+address: String
+addressCity: String
+addressCountry: String
+phone: String
+type: CompanyType
+ownerId: ID!
+blockchain: String
+balance: Int
+
+
+
+owner: tbxUser @connection(fields:["ownerId"])
+staffs: [tbxStaffCompany] @connection(keyName:"byCompany",fields:["id"], limit:20)
+products: [tbxProduct] @connection (keyName: "byCompany", fields:["id"],limit:20)
+payments: [tbxPayment] @connection (keyName: "byCompanyByDate", fields:["id"], limit:20)
+}
+
+
+type tbxProduct @model
+@key (name:"byCompany", fields:["companyId"])
+{
+id:ID!
+description: String
+life: String
+companyId: ID!
+blockchain: String
+
+
+company : tbxCompany @connection(fields:["companyId"])
+lots: [tbxLot] @connection (keyName:"byProduct",fields:["id"], limit:20)
+}
+
+
+type tbxLot @model
+@key (name:"byProduct",fields:["productId"])
+{
+id:ID!
+productId: ID!
+blockchain : String
+amount : Int
+unit: Int
+manufactureDate : AWSDateTime
+
+
+product: tbxProduct @connection (fields:["productId"])
+items: [tbxItem] @connection(keyName:"byLot", fields:["id"], limit:20)
+}
+
+
+type tbxItem @model
+@key(name:"byLot", fields: ["lotId"])
+{
+id:ID!
+qrcode: String
+lotId : ID!
+
+
+
+lot : tbxLot @connection(fields:["lotId"])
+timeline : [tbxTimeline] @connection(keyName:"byItem", fields:["id"], limit:20)
+}
+
+
+type tbxMessage @model
+@key (name: "byFromUserByDate", fields: ["fromUserId","date"])
+@key (name : "byToUserByDate", fields: ["toUserId","date"])
+{
+id:ID!
+fromUserId: ID
+toUserId: ID
+date: AWSDateTime
+type: MessageType
+status : MessageType
+companyName: String
+itemName: String
+
+
+}
+
+
+type tbxTimeline @model
+@key(name:"byItem", fields:["itemId"])
+{
+id:ID!
+fromUserId: ID
+toUserId: ID
+itemId: ID!
+date: AWSDateTime
+
+
+item:tbxItem @connection(fields:["itemId"])
+}
+
+
+type tbxPayment @model
+@key(name:"byCompanyByDate", fields:["companyId"])
+@key(name:"byUserByDate", fields:["userId"])
+{
+id:ID!
+type: PaymentType
+userId: ID
+companyId : ID
+productId: ID
+lotId: ID
+amount: Int
+refBlockchain: String
+previousBalance: Int
+currentBalance: Int
+
+
+
+
+
+
+}
